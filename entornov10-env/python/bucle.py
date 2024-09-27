@@ -1,7 +1,7 @@
 from pysnmp.hlapi import getCmd, SnmpEngine, CommunityData, UdpTransportTarget, ContextData, ObjectType, ObjectIdentity
 
 # Definir una lista con algunas IPs
-ip = ['192.168.244.12', '192.168.244.13']
+ip = ['192.168.244.12', '192.168.244.13','192.168.244.14','192.168.244.15']
 
 # Usar un bucle for que itera dependiendo del número de elementos en la lista
 for i in range(len(ip)):
