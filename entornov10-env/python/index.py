@@ -4,7 +4,7 @@ from pysnmp.hlapi import getCmd, SnmpEngine, CommunityData, UdpTransportTarget, 
 iterator = getCmd(
     SnmpEngine(),  # Crear un motor SNMP
     CommunityData('public'),  # Nombre de la comunidad (en este caso 'public')
-    UdpTransportTarget(('192.168.244.13', 161)),  # Dirección IP del router y puerto 161 (SNMP)
+    UdpTransportTarget(('192.168.244.15', 161)),  # Dirección IP del router y puerto 161 (SNMP)
     ContextData(),  # Contexto vacío para SNMPv2c
     # Consultamos múltiples OIDs
     ObjectType(ObjectIdentity('1.3.6.1.2.1.1.1.0')),  # sysDescr (Descripción del sistema)
