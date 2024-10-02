@@ -78,7 +78,7 @@ try:
                 "ip address 192.168.1.1 255.255.255.0",
                 "no shutdown",
                 "exit",
-                "hostname RouterNewName"
+                "do wr "
             ]
             # Enviar los comandos de configuración
             print("\n--- Aplicando configuración en Cisco IOS ---")
@@ -101,7 +101,7 @@ try:
             # Comandos para Juniper Junos
             comandos_junos = [
                 "set system host-name JuniperRouter",
-                "set interfaces ge-0/0/0 unit 0 family inet address 192.168.20.1/24",
+                "set interfaces ge-0/0/1 unit 0 family inet address 192.168.20.1/24",
                 "commit"
             ]
             # Enviar los comandos de configuración
