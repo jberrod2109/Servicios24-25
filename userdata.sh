@@ -45,5 +45,5 @@ Ejecutar el contenedor de ProFTPD
 sudo docker run -d -p 20:20 -p 21:21 -p 49152:49152 -p 65534:65534 myproftpd
 # Configurar ProFTPD
 echo "DefaultRoot ~" >> /etc/proftpd/proftpd.conf 
-echo "PassivePorts 49152 65534" >> /etc/proftpd/proftpd.conf
+echo "PassivePorts 49152-65534" >> /etc/proftpd/proftpd.conf
 

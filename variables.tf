@@ -42,3 +42,10 @@ variable "internet_gateway_name" {
   type        = string
   default     = "vpc-public-gw"
 }
+
+# Variable para seleccionar la Subnet ID para la instancia FTP
+variable "ftp_subnet_id" {
+  description = "ID de la subred pública donde se lanzará la instancia FTP."
+  type        = string
+  default     = ""  # Deja el default vacío, luego lo asignaremos en el archivo de configuración
+}
