@@ -1,0 +1,4 @@
+/ftp/.terraform
+/ftp/.terraform.lock.hcl
+/ftp/terraform.tfstate
+/ftp/userdata.sh
