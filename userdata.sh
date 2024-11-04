@@ -43,6 +43,10 @@ sudo docker build -t myproftpd .
 
 Ejecutar el contenedor de ProFTPD
 sudo docker run -d -p 20:20 -p 21:21 -p 49152:49152 -p 65534:65534 myproftpd
+#acceder al contenedor
+sudo docker exec -it recursing_stonebraker bash
+#crear un usuario 
+useradd -m ftp && echo "ftp:jose" | chpasswd
 # Configurar ProFTPD
 echo "DefaultRoot ~" >> /etc/proftpd/proftpd.conf 
 echo "PassivePorts 49152-65534" >> /etc/proftpd/proftpd.conf
