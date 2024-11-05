@@ -44,8 +44,15 @@ variable "internet_gateway_name" {
 }
 
 # Variable para seleccionar la Subnet ID para la instancia FTP
-variable "ftp_subnet_id" {
-  description = "ID de la subred pública donde se lanzará la instancia FTP."
-  type        = string
-  default     = ""  # Deja el default vacío, luego lo asignaremos en el archivo de configuración
+# Definiciones de variables sin valor
+variable "instance_type" {
+  description = "Tipo de la instancia EC2"
+}
+
+variable "ami" {
+  description = "ID de la AMI para la instancia"
+}
+
+variable "key_name" {
+  description = "Nombre del par de claves para acceder a la instancia"
 }

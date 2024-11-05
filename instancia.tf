@@ -128,18 +128,18 @@ resource "aws_security_group" "ftp_sg" {
     Name = "ftp-sg"
   }
 }
-
+  
 # Referencia el nuevo grupo de seguridad en la instancia
-resource "aws_instance" "instancia-ftp" {
-  ami                    = "ami-064519b8c76274859"  # Cambia por la AMI deseada
-  instance_type          = "t2.micro"
+resource "aws_instance" "instancia_ftp" {
+  ami                    = var.ami                 # Usar la variable para la AMI
+  instance_type          = var.instance_type       # Usar la variable para el tipo de instancia
   subnet_id              = aws_subnet.subnet[0].id  # La subred pública en la VPC correcta
   vpc_security_group_ids = [aws_security_group.ftp_sg.id]
 
-  key_name   = "ftp"  # Reemplaza con el nombre de tu clave pública
-  user_data  = file("userdata.sh") #Reemplaza con el nombre de tu script
+  key_name   = var.key_name                       # Usar la variable para el nombre de la clave
+  user_data  = file("userdata.sh")               # Reemplaza con el nombre de tu script
 
   tags = {
-    Name = "proftp"
+    Name = "ftp"
   }
 }
