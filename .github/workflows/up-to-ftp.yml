@@ -38,4 +38,4 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}      
           local-dir: ./                               
           server-dir: /Home/jose/         
-          git-ftp-args: --insecure                  
+                            
