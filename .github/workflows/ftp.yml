@@ -46,16 +46,6 @@ jobs:
       - name: Rename Terraform State
         run: mv terraform.tfstate terraform_state.tfstate
 
-      - name: Upload Terraform State to Cache
-        uses: actions/cache@v3
-        with:
-          path: terraform_state.tfstate
-          key: ${{ runner.os }}-terraform-${{ github.ref }}  # Cambia esto si es necesario
-          restore-keys: |
-            ${{ runner.os }}-terraform-
-
-      - name: Upload Terraform State
-        uses: actions/upload-artifact@v4
-        with:
-          name: terraform_state
-          path: terraform_state.tfstate
+      - name: Upload Terraform State to S3
+        run: |
+          aws s3 cp terraform_state.tfstate s3://artefacto/terraform_state.tfstate
