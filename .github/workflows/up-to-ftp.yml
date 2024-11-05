@@ -1,0 +1,40 @@
+name: Upload S3 Artifact to FTP
+
+on:
+  workflow_dispatch:
+
+jobs:
+  upload-to-ftp:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: "us-east-1" 
+
+      - name: Download Artifact from S3
+        run: |
+          aws s3 cp s3://artefacto-tf/terraform_state.tfstate ./terraform_state.tfstate
+        
+      - name: Check if Artifact was Downloaded
+        run: |
+          if [ ! -f terraform_state.tfstate ]; then
+            echo "Artifact not found!"
+            exit 1
+          fi
+
+      - name: Upload Terraform State to FTP
+        uses: SamKirkland/FTP-Deploy-Action@4.1.0
+        with:
+          server: ${{ secrets.FTP_SERVER }}          
+          username: ${{ secrets.FTP_USERNAME }}     
+          password: ${{ secrets.FTP_PASSWORD }}      
+          local-dir: ./                               
+          server-dir: /Home/jose          
+          git-ftp-args: --insecure                  
