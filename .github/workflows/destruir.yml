@@ -1,4 +1,4 @@
-name: Destroy Terraform Resources
+name: terraform-destroy
 
 on:
   workflow_dispatch:
