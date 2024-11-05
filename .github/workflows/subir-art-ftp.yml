@@ -1,0 +1,34 @@
+name: Upload Cached Artifact to FTP
+
+on:
+  workflow_dispatch:
+
+jobs:
+  upload-to-ftp:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Restore Terraform State from Cache
+        uses: actions/cache@v3
+        with:
+          path: terraform_state.tfstate
+          key: ${{ runner.os }}-terraform-${{ github.ref }}  # Usa la misma clave que usaste al guardar
+          restore-keys: |
+            ${{ runner.os }}-terraform-
+
+      - name: Check if Artifact was Restored
+        run: |
+          if [ ! -f terraform_state.tfstate ]; then
+            echo "No artifact found in cache!"
+            exit 1
+          fi
+
+      - name: Upload Terraform State to FTP
+        uses: SamKirkland/FTP-Deploy-Action@4.1.0
+        with:
+          server: ${{ secrets.FTP_SERVER }}          
+          username: ${{ secrets.FTP_USERNAME }}      
+          password: ${{ secrets.FTP_PASSWORD }}      
+          local-dir: ./                               
+          server-dir: /home/jose/          
+          git-ftp-args: --insecure                  
