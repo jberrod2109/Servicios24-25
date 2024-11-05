@@ -24,13 +24,9 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: "us-east-1"
 
-      - name: Configure SSH Key
-        run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > id_rsa
-          chmod 600 id_rsa
-          eval $(ssh-agent -s)
-          ssh-add id_rsa
-
+      - name: clave ssh
+        run: echo "${{ secrets.SSH_PRIVATE_KEY }}" 
+        
       - name: Terraform Init
         run: terraform init
         working-directory: .
@@ -42,6 +38,13 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
         working-directory: .
+
+      - name: Upload Terraform State
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform_state
+          path: terraform.tfstate
+
 
       - name: Rename Terraform State
         run: mv terraform.tfstate terraform_state.tfstate
