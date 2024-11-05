@@ -1,4 +1,4 @@
-name: proft
+name: proft-artefacto
 
 on:
   workflow_dispatch:
