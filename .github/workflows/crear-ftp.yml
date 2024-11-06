@@ -1,4 +1,4 @@
-name: proft-artefacto
+name: proft-aartefacto
 
 on:
   workflow_dispatch:
@@ -56,7 +56,7 @@ jobs:
           name: terraform_state
 
       - name: Rename Terraform State
-        run: mv terraform.tfstate terraform_state.tfstate
+        run: mv terraform_state/terraform.tfstate terraform_state.tfstate
 
       - name: Upload Terraform State to S3
         run: |
