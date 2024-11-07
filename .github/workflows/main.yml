@@ -1,4 +1,4 @@
-name: terraformd-estroy-s3
+name: terraform destroy s3
 
 on:
   workflow_dispatch:
@@ -28,6 +28,7 @@ jobs:
           if [ ! -f terraform.tfstate ]; then
             echo "Terraform state file not found!"
             exit 1
+          fi
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
