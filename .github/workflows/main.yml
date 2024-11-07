@@ -1,4 +1,4 @@
-name: terraform destroy
+name: terraformd-estroy-s3
 
 on:
   workflow_dispatch:
