@@ -111,8 +111,8 @@ resource "aws_security_group" "ftp_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
-    from_port   = 49152
-    to_port     = 65534
+    from_port   = 1300
+    to_port     = 1400
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -140,6 +140,14 @@ resource "aws_instance" "instancia_ftp" {
   user_data  = file("userdata.sh")               # Reemplaza con el nombre de tu script
 
   tags = {
-    Name = "ftp"
+    Name = "ftp-s3"
+  }
+}
+# Crear un bucket de S3 para almacenar archivos del servidor FTP
+resource "aws_s3_bucket" "proftpd_bucket" {
+  bucket = var.s3_bucket_name  # Usar la variable para el nombre del bucket
+
+  tags = {
+    Name = var.s3_bucket_name
   }
 }

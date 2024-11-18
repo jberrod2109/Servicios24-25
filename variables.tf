@@ -56,3 +56,10 @@ variable "ami" {
 variable "key_name" {
   description = "Nombre del par de claves para acceder a la instancia"
 }
+
+# Nombre del bucket de S3 para almacenar archivos del servidor FTP
+variable "s3_bucket_name" {
+  description = "Nombre del bucket de S3 para ProFTPD."
+  type        = string
+
+}

@@ -15,7 +15,8 @@ internet_gateway_name = "vpc-public-gw"
 
 # Valores para las variables ahora en terraform.tfvars
 instance_type        = "t2.micro"
-ami                  = "ami-064519b8c76274859"  # Cambia esto por el ID de la AMI que desees usar
+ami                  = "ami-064519b8c76274859"  
 key_name             = "ftp"                     # Asegúrate de que el par de claves ya exista en la región
+s3_bucket_name       = "proftpd-router"  
 
      
