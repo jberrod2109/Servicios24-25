@@ -1,4 +1,4 @@
-name: proft-artefacto
+name: lanzar-ftps-s3
 
 on:
   workflow_dispatch:
