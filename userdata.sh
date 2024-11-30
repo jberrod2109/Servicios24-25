@@ -30,12 +30,14 @@ sudo usermod -aG docker admin
 newgrp docker
 
 # Configurar credenciales de AWS
-mkdir -p ~/.aws
-cat > ~/.aws/credentials <<EOF
+
+
+sudo mkdir -p ~/.aws
+sudo cat > ~/.aws/credentials <<EOF
 [default]
-aws_access_key_id=${AWS_ACCESS_KEY_ID}
-aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}
-aws_session_token=${AWS_SESSION_TOKEN}
+aws_access_key_id=ASIARZPX7J2UA4ULYOQO
+aws_secret_access_key=NkCYH4M5Uq98Ns4+kTUdU/I3g2lX7qKhic1nF81r
+aws_session_token=IQoJb3JpZ2luX2VjEOL//////////wEaCXVzLXdlc3QtMiJGMEQCICVODA+ODpE7eu80R+xOnbTLIuAcltR2pgzzI5Dd2IOxAiBs3DBdQGHHEXNXlXbruIltD9zHwM3/LW048c2p1LUOJCq6AgiL//////////8BEAAaDDEyMzQ2MzQ4NzE0NCIMDvRLe7Ffw03zTzEcKo4C7eOq5myRLCIBiLMLwHe8nfbVsHkbQ290LOhfQiKeTNaptrFT3LLGSMc12spnxJI60JySOuMCwaSNiXzQOW9Eglh5vt+eDmy/FpGvjT6vbZIgJHGXwMbrCDndy5vCPbsveQMGh8x9yTEF1LXL/KAPxcz6HaHIkHsNa0Wf4wBh05/Hf3PNEY0nBD2v3nsLHAbzRrAp8UDTBDqDLI+iBTXwiHEVO4IvCefzzGA1pXj/THszWwrFQiGAe/hIoUxox5Ot/FTAfA2HmyCP17CKJnmoCaXlrnkAQbM99mXyVTzvt+E5zYiRCPtat+se9L9bciDu6/W/4OiZpuw/RctoC25e+4U+TR1LRmfAmtZ7NRhdMLa3q7oGOp4BKryfIsI/3W2qDkupMt8WJaqGqFVC7B4qsrn4/VacVdf9S5M4Yaqi+DXEXFTtmKw3zyekQst7FQpYmlCHK+mDzyc2Y6zE8XTedrL4YvWEa6E9nLA180Gva2Dr00zSN+ByfWz2OQ26HoZFC9qDagqM+Om8wVgA3/YVb5fZ/m5R91GZ5xMU9UidMSlic9tUhMEF+Zi8MEB+Yy0Zk4g45WI=
 EOF
 
 # Crear directorio para el FTP
