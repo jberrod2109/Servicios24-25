@@ -131,13 +131,13 @@ resource "aws_security_group" "ftp_sg" {
   
 # Referencia el nuevo grupo de seguridad en la instancia
 resource "aws_instance" "instancia_ftp" {
-  ami                    = var.ami                 # Usar la variable para la AMI
-  instance_type          = var.instance_type       # Usar la variable para el tipo de instancia
-  subnet_id              = aws_subnet.subnet[0].id  # La subred pública en la VPC correcta
+  ami                    = var.ami                 
+  instance_type          = var.instance_type       
+  subnet_id              = aws_subnet.subnet[0].id  
   vpc_security_group_ids = [aws_security_group.ftp_sg.id]
 
-  key_name   = var.key_name                       # Usar la variable para el nombre de la clave
-  user_data  = file("userdata.sh")               # Reemplaza con el nombre de tu script
+  key_name   = var.key_name                      
+  user_data  = file("userdata.sh")              
 
   tags = {
     Name = "ftp-s3"
@@ -145,8 +145,8 @@ resource "aws_instance" "instancia_ftp" {
 }
 # Crear un bucket de S3 para almacenar archivos del servidor FTP
 resource "aws_s3_bucket" "proftpd_bucket" {
-  bucket = var.s3_bucket_name  # Usar la variable para el nombre del bucket
-
+  bucket = var.s3_bucket_name 
+  force_destroy = true
   tags = {
     Name = var.s3_bucket_name
   }
