@@ -1,0 +1,45 @@
+
+name: terraform destroy ftpS3-ldap
+
+on:
+  workflow_dispatch:
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: "us-east-1"  
+
+      - name: Download Terraform State from S3
+        run: |
+          aws s3 cp s3://artefacto-tf/terraform_state.tfstate ./terraform.tfstate
+      - name: Verify Terraform State File Exists
+        run: |
+          if [ ! -f terraform.tfstate ]; then
+            echo "Terraform state file not found!"
+            exit 1
+          fi
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.0
+
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: Run Terraform Destroy
+        run: terraform destroy -auto-approve
+
+      - name: Delete Terraform State File from S3
+        run: |
+          aws s3 rm s3://artefacto-tf/terraform_state.tfstate
