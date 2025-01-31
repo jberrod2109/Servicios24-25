@@ -1,1 +1,19 @@
-
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replicaset-nginx
+spec:
+  replicas: 12
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: 512007083666.dkr.ecr.us-east-1.amazonaws.com/web:nginx-v1
+        name: contenedor-nginx
+        ports:
+        - containerPort: 80
