@@ -1,0 +1,14 @@
+- name: Pasar las credenciales de Amazon 
+  hosts: web,kubernetes
+  become: true
+  vars_files:
+    - /home/debian/web/vars/main.yml
+
+  tasks:
+    - name: Pasar las credenciales de AWS
+      ansible.builtin.copy:
+        src: /home/debian/web/templates/credenciales.conf.j2
+        dest: /root/.aws/credentials
+        owner: root
+        group: root
+        mode: '0644'
