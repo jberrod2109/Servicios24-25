@@ -29,4 +29,4 @@ ami           = "ami-064519b8c76274859"  # Cambia a la AMI que desees usar
 key_name      = "ftp"                    # Asegúrate de que el par de claves ya exista en la región
 
 # Configuración del Bucket S3
-bucket_name = "copiasrouter-josebertos-21224"
+bucket_name = "ftp-ladp"
