@@ -30,19 +30,19 @@ EOT
 cat << 'EOF' > /home/admin/ldap-ftp/bootstrap.ldif
 
 # Unidad organizativa para usuarios
-dn: ou=users,dc=ftpjose,dc=com
+dn: ou=users,dc=joseftp,dc=com
 objectClass: top
 objectClass: organizationalUnit
 ou: users
 
 # Usuario: jose
-dn: uid=jose,ou=users,dc=ftpjose,dc=com
+dn: uid=jose,ou=users,dc=joseftp,dc=com
 objectClass: inetOrgPerson
 objectClass: posixAccount
 cn: jose
 sn: asir
 uid: jose
-mail: jose@ftpjose.com
+mail: jose@joseftp.com
 userPassword: jose
 uidNumber: 1001
 gidNumber: 1001
@@ -50,14 +50,28 @@ homeDirectory: /home/ftp/
 loginShell: /bin/bash
 
 # Usuario: carmona
-dn: uid=carmona,ou=users,dc=ftpjose,dc=com
+dn: uid=carmona,ou=users,dc=joseftp,dc=com
 objectClass: inetOrgPerson
 objectClass: posixAccount
 cn: carmona
 sn: makinito
 uid: carmona
-mail: carmona@ftpjose.com
+mail: carmona@joseftp.com
 userPassword: carmona
+uidNumber: 1002
+gidNumber: 1002
+homeDirectory: /home/ftp/
+loginShell: /bin/bash
+
+# Usuario: paco
+dn: uid=paco,ou=users,dc=joseftp,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+cn: paco
+sn: makinito
+uid: paco
+mail: paco@joseftp.com
+userPassword: paco
 uidNumber: 1002
 gidNumber: 1002
 homeDirectory: /home/ftp/
@@ -78,7 +92,7 @@ sleep 10
 docker cp bootstrap.ldif ldap:/tmp
 
 # Agregar la configuración desde el archivo LDIF
-docker exec ldap ldapadd -x -D "cn=admin,dc=ftpjose,dc=com" -w admin-ldap -f /tmp/bootstrap.ldif
+docker exec ldap ldapadd -x -D "cn=admin,dc=joseftp,dc=com" -w admin-ldap -f /tmp/bootstrap.ldif
 
 
 # Reiniciar el contenedor
