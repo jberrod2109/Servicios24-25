@@ -27,9 +27,10 @@ sudo apt install s3fs -y
 sudo mkdir -p ~/.aws
 sudo cat > ~/.aws/credentials <<EOF
 [default]
-aws_access_key_id=ASIARZPX7J2UIROP4SDM
-aws_secret_access_key=5M6ID6/ztwaecagytYetU+xTcvhJFwgeIkrQEpPA
-aws_session_token=IQoJb3JpZ2luX2VjEBMaCXVzLXdlc3QtMiJIMEYCIQCxjOhhnrq6jJ7+hctSR6y2leg71FWDi+U2ZUCMXc7G9QIhAJnLCe7FYU654EJD9Jjv82UDlusrquzQVu7wK+KK5SFUKroCCLz//////////wEQABoMMTIzNDYzNDg3MTQ0IgwCvCnAm8TXMvDGghkqjgIjhOf+9Mt+CrJSd3fVOrCHoAYFcY+DVPGp8ut3QDyKJmJbWfS7nXzoMPh0OhbO7neKOcFxBRjKVY41cy0tZqbOaviZbCraLLdkrgI5r/aD0DAvoq1DoShuMHorf5vehJ12RtfsfnUKRWXRdqloV9aC0VZfNjB4QbJaNvYazONpSFvdIy1ybqihzbHQ5wSxu5OGHLgHadv+R7h+aosKRT2H9PceQG4S2KAOmgn5SIbWLixylh4SZGTL7eSlRdTeTgat80yP0JmKSdhQY1eX+GwAcC8xPOAISbnf3u4dh+JFQRdCjy+i8Uz7xoRFUVgfyUfUqPyQG0sWAy2anmoGgSPcsz2+1dLU0spnycC/+oQwg6W2ugY6nAFQPG4VfMlt2uYDiNXIYc2A7y4+svvq0V4nfaT0bgWlGdpe2CL/sc8BXoeByycqnaGo+eQiqgvx+RGmt6Rck7jGUSDa3C2gnrzkxLNOQHGHn+KVB2UZMcB9uN7BkdR8m0iNX3Q/YYkAI2RAwF9KfF9FamR8RWJQ9Wio7a1mHS4WzJkMzlF3MGAgSdTnVkW35dHvq0vzvvxYT0L3CEk=
+aws_access_key_id=ASIAXONQAC2JA6RGLGSY
+aws_secret_access_key=SV0sig3XugJR9o5ogpfxLz9YCHgTUJWSbUoUlw1K
+aws_session_token=IQoJb3JpZ2luX2VjEAkaCXVzLXdlc3QtMiJIMEYCIQDRchwxrhFfSjHCob8+EVHM3792/NCsl0HaAMYKfqJUPgIhAJrXqWHnIyJ75KGSlaldWDJz3fPL28wlvdQdgUDHWzwvKrECCEIQARoMNTEyMDA3MDgzNjY2Igwbxy/0oGbStzx/DcYqjgKSRAEsz16dPEzIAKZdOABOrLi5mX0XW8f2DjZxc9X8T7rgXoTglhMJI/cpMy35BeW5aNQPAPOvf6SDp8M3I3DqNtKGNYiHZXJgGInAfgM2/eZL5DE9Uf/8W8csxaXGFLIS0FPOf4c6C2pnFprgGLWNhHsfem2gZZKmpwiflT8V9zQeZHwVpSQwQhyHAfKhTILMJt4Q6Dz1DLfYWE2s7hRYgCkz0Hger/Ap1bYxq8PWbYlrEocE5yBJNd7n9BySoaLoRnXdZDe9YCjX+fS2DKaFijVH6BAeWqmW6E86bKws51rQwTvhhc0wJv2vlu5unokSioq81oBc0eJPgD2Cb/JE7Pz8eTlNoBeLtEOkt/Aw8Yz2vQY6nAG/7ofkFn+E7DYru0YZchv0otnBNjh/jbswywTk77hyOmAiNP0QPboz2KXyzqRWNhYSD2TSrSHePsWK4CWb3PvbCOEo1mS43FFkDJPI0HXm9+sYSWXFfFbefhk+/7d7bZ+aZqsBxGmecubQNK4KFKQL5T9ajPalwxvrnGcvuLjWM2Y4k8iwQ6w+d2NZ2q0VgDLyckmMxS3pwr/nEPM=
+EOF
 #intsalacion de cron y ejecutar al arrancar
 sudo apt install cron -y
 sudo systemctl enable cron
@@ -54,7 +55,7 @@ sudo systemctl enable cron
 
 
 # Montar el bucket S3 en el directorio del FTP
-sudo s3fs ftp-ladp /mnt/bucket-s3 -o allow_other
+sudo s3fs proftpd-router2129  /mnt/bucket-s3 -o allow_other
 
 
 # Crear directorio para el Dockerfile
@@ -131,7 +132,7 @@ RUN echo "<IfModule mod_ldap.c>" >> /etc/proftpd/proftpd.conf && \
     echo "    LDAPAuthBinds on" >> /etc/proftpd/proftpd.conf && \
     echo "    LDAPServer ldap://192.168.152.196:389" >> /etc/proftpd/proftpd.conf && \
     echo "    LDAPBindDN \"cn=admin,dc=joseftp,dc=com\" \"admin-ldap\"" >> /etc/proftpd/proftpd.conf && \
-    echo "    LDAPUsers \"dc=joseftp,dc=com\" \"(uid=%u)\"" >> /etc/proftpd/proftpd.conf && \
+    echo "    LDAPUsers \"ou=users,dc=joseftp,dc=com\" \"(uid=%u)\"" >> /etc/proftpd/proftpd.conf && \
     echo "</IfModule>" >> /etc/proftpd/proftpd.conf
 
 # Configuración de LDAP en /etc/proftpd/ldap.conf
