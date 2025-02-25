@@ -35,19 +35,6 @@ objectClass: top
 objectClass: organizationalUnit
 ou: users
 
-# Usuario: jose
-dn: uid=jose,ou=users,dc=joseftp,dc=com
-objectClass: inetOrgPerson
-objectClass: posixAccount
-cn: jose
-sn: asir
-uid: jose
-mail: jose@joseftp.com
-userPassword: jose
-uidNumber: 1001
-gidNumber: 1001
-homeDirectory: /home/ftp/
-loginShell: /bin/bash
 
 # Usuario: carmona
 dn: uid=carmona,ou=users,dc=joseftp,dc=com
