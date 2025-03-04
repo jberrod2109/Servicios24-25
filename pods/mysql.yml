@@ -12,12 +12,17 @@ spec:
       labels:
         app: mysql
     spec:
-      imagePullSecrets:
-        - name: ecr-secret
       containers:
         - name: mysql
           image: 512007083666.dkr.ecr.us-east-1.amazonaws.com/web:sql
           imagePullPolicy: Always
           ports:
             - containerPort: 3306
-          
+          envFrom:
+            - configMapRef:
+                name: mysql-config
+      imagePullSecrets:
+        - name: regcred
+
+
+
