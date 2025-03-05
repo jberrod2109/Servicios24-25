@@ -1,0 +1,232 @@
+---
+- name: Configurar y ejecutar NGINX en contenedor Docker remoto
+  hosts: web
+  become: true
+
+  vars_files:
+    - /home/debian/web/vars/main.yml
+
+  tasks:
+    - name: Iniciar Docker
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Crear directorio conf nginx
+      ansible.builtin.file:
+        path: /etc/nginx/conf.d
+        state: directory
+        mode: '0755'
+
+    - name: Copiar configuración de NGINX
+      ansible.builtin.copy:
+        src: /home/debian/web/templates/default.conf.j2
+        dest: /home/kubernetes/nginx.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Copiar archivo server.conf
+      ansible.builtin.copy:
+        src: /home/debian/web/templates/server.conf.j2
+        dest: /home/kubernetes/server.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Subir certificado SSL
+      ansible.builtin.copy:
+        src: /etc/ssl/certs/certificado.crt
+        dest: /home/kubernetes/certificado.crt
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Crear directorio /etc/ssl/private
+      ansible.builtin.file:
+        path: /etc/ssl/private
+        state: directory
+        mode: '0777'
+    
+    - name: Crear directorio php
+      ansible.builtin.file:
+        path: /home/kubernetes/php
+        state: directory
+        mode: '0777'
+
+    - name: Crear directorio mysql
+      ansible.builtin.file:
+        path: /home/kubernetes/sql
+        state: directory
+        mode: '0777'
+
+    - name: Copiar clave privada SSL
+      ansible.builtin.copy:
+        src: /etc/ssl/private/private.key
+        dest: /home/kubernetes/private.key
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Copiar index en español (por defecto)
+      ansible.builtin.copy:
+        src: /home/debian/web/templates/indexes.j2
+        dest: /home/kubernetes/index.html
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Copiar index en inglés
+      ansible.builtin.copy:
+        src: /home/debian/web/templates/indexen.j2
+        dest: /home/kubernetes/indexen.html
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Copiar hojas de estilos
+      ansible.builtin.copy:
+        src: /home/debian/web/templates/css.css.j2
+        dest: /home/kubernetes/css.css
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Copiar espacio virtual 1 en español
+      ansible.builtin.copy:
+        src: /home/debian/web/templates/virtual1.j2
+        dest: /home/kubernetes/virtual1.html
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Copiar espacio virtual 2 en español
+      ansible.builtin.copy:
+        src: /home/debian/web/templates/virtual2.j2
+        dest: /home/kubernetes/virtual2.html
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Copiar espacio virtual 1 en inglés
+      ansible.builtin.copy:
+        src: /home/debian/web/templates/virtual1en.j2
+        dest: /home/kubernetes/virtual1en.html
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Copiar espacio virtual 2 en inglés
+      ansible.builtin.copy:
+        src: /home/debian/web/templates/virtual2en.j2
+        dest: /home/kubernetes/virtual2en.html
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Eliminar el contenedor (si existe)
+      ansible.builtin.command:
+        cmd: docker rm -f https-jose
+      ignore_errors: true
+#creacion de contenedor de nginx
+
+    - name: Copiar Dockerfile
+      ansible.builtin.copy:
+        src: /home/debian/web/templates/dockerfile.j2
+        dest: /home/kubernetes/Dockerfile
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Construir la imagen con Dockerfile
+      ansible.builtin.command:
+        cmd: docker build -t https-jose /home/kubernetes/
+
+    - name: Lanzar contenedor con la imagen creada
+      ansible.builtin.command:
+        cmd: >
+          docker run -d -p 80:80 -p 443:443
+          --name https-jose
+          https-jose
+
+    - name: Autenticarse en Amazon ECR
+      shell: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 274575712066.dkr.ecr.us-east-1.amazonaws.com
+      args:
+        executable: /bin/bash
+
+    - name: Etiquetar la imagen para ECR
+      ansible.builtin.command:
+        cmd: >
+          docker tag https-jose:latest 512007083666.dkr.ecr.us-east-1.amazonaws.com/web:deployando
+
+    - name: Subir la imagen a Amazon ECR
+      ansible.builtin.command:
+        cmd: docker push 512007083666.dkr.ecr.us-east-1.amazonaws.com/web:deployando
+
+#creacion de contenedor php
+    - name: Copiar Dockerfile php
+      ansible.builtin.copy:
+        src: /home/debian/web/templates/dockerfile-php.j2
+        dest: /home/kubernetes/php/Dockerfile
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Construir la imagen con Dockerfile
+      ansible.builtin.command:
+        cmd: docker build -t php-jose /home/kubernetes/php
+
+    - name: Lanzar contenedor con la imagen creada
+      ansible.builtin.command:
+        cmd: >
+          docker run -d  -p  9000:9000
+          --name php-jose
+          php-jose
+
+    - name: Autenticarse en Amazon ECR
+      shell: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 274575712066.dkr.ecr.us-east-1.amazonaws.com
+      args:
+        executable: /bin/bash
+
+    - name: Etiquetar la imagen para ECR
+      ansible.builtin.command:
+        cmd: >
+          docker tag php-jose:latest 512007083666.dkr.ecr.us-east-1.amazonaws.com/web:php
+
+    - name: Subir la imagen a Amazon ECR
+      ansible.builtin.command:
+        cmd: docker push 512007083666.dkr.ecr.us-east-1.amazonaws.com/web:php
+#creacion del contenedor mysql
+    - name: Copiar Dockerfile sql
+      ansible.builtin.copy:
+        src: /home/debian/web/templates/dockerfile-sql.j2
+        dest: /home/kubernetes/sql/Dockerfile
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Construir la imagen con Dockerfile
+      ansible.builtin.command:
+        cmd: docker build -t sql-jose /home/kubernetes/sql/
+
+    - name: Lanzar contenedor con la imagen creada
+      ansible.builtin.command:
+        cmd: >
+          docker run -d -p 3306:3306
+          --name sql-jose
+          sql-jose
+
+    - name: Autenticarse en Amazon ECR
+      shell: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 274575712066.dkr.ecr.us-east-1.amazonaws.com
+      args:
+        executable: /bin/bash
+
+    - name: Etiquetar la imagen para ECR
+      ansible.builtin.command:
+        cmd: >
+          docker tag sql-jose:latest 512007083666.dkr.ecr.us-east-1.amazonaws.com/web:sql
+
+    - name: Subir la imagen a Amazon ECR
+      ansible.builtin.command:
+        cmd: docker push 512007083666.dkr.ecr.us-east-1.amazonaws.com/web:sql

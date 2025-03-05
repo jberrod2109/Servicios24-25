@@ -1,0 +1,11 @@
+FROM mysql:8.4
+ENV MYSQL_ROOT_PASSWORD='my_password'       
+ENV MYSQL_DATABASE=karting     
+ENV MYSQL_USER=jose      
+ENV MYSQL_PASSWORD='jose'       
+
+EXPOSE 3306
+
+
+CMD ["mysqld"]
+

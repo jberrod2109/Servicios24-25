@@ -1,0 +1,95 @@
+---
+- name: Configurar y ejecutar NGINX en contenedor Docker basado en Rocky Linux
+  hosts: web
+  become: true
+  vars_files:
+    - /home/debian/web/vars/main.yml
+
+  tasks:
+    - name: Asegurar que Docker está corriendo
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Crear directorio para la configuración de NGINX
+      ansible.builtin.file:
+        path: /etc/nginx/conf.d
+        state: directory
+        mode: '0755'
+
+    - name: Subir archivo de configuración de NGINX
+      ansible.builtin.copy:
+        src: /home/debian/web/templates/default.rocky.conf.j2
+        dest: /etc/nginx/rocky-default.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Subir archivo server
+      ansible.builtin.copy:
+        src: /home/debian/web/templates/rocky.conf.j2
+        dest: /etc/nginx/conf.d/rocky-server.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Subir certificado SSL
+      ansible.builtin.copy:
+        src: /etc/ssl/certs/certificate.crt
+        dest: /etc/ssl/certs/certificate.crt
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Subir clave privada SSL
+      ansible.builtin.copy:
+        src: /etc/ssl/private/private.key
+        dest: /etc/ssl/private/nginx.key
+        owner: root
+        group: root
+        mode: '0600'
+
+    - name: Detener y eliminar contenedor existente (si existe)
+      ansible.builtin.command:
+        cmd: docker rm -f https-jose
+      ignore_errors: true
+
+    - name: Lanzar contenedor Rocky Linux con puertos 80 y 443 expuestos
+      ansible.builtin.command:
+        cmd: >
+          docker run -it -d -p 443:443 -p 80:80
+          --name https-jose
+          -v /etc/ssl/certs:/etc/ssl/certs
+          -v /etc/ssl/private:/etc/ssl/private
+          -v /etc/nginx/conf.d:/etc/nginx/conf.d
+          rockylinux:9 bash
+
+    - name: Actualizar paquetes en el contenedor
+      ansible.builtin.command:
+        cmd: docker exec -it https-jose dnf update -y
+
+    - name: Instalar NGINX en el contenedor
+      ansible.builtin.command:
+        cmd: docker exec -it https-jose dnf install -y nginx
+
+    - name: Verificar instalación de NGINX
+      ansible.builtin.command:
+        cmd: docker exec -it https-jose nginx -v
+
+    - name: Iniciar NGINX en el contenedor
+      ansible.builtin.command:
+        cmd: docker exec -it https-jose nginx
+
+    - name: Crear una imagen desde el contenedor en ejecución
+      ansible.builtin.command:
+        cmd: docker commit https-jose jberrod/https-jose-rocky:latest
+
+    - name: Iniciar sesión en Docker Hub
+      ansible.builtin.command:
+        cmd: docker login -u {{ usuario }} -p {{ passwd }}
+      no_log: true
+
+    - name: Subir la imagen al Docker Hub
+      ansible.builtin.command:
+        cmd: docker push jberrod/https-jose-rocky:latest

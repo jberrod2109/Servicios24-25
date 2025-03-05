@@ -1,0 +1,38 @@
+FROM rockylinux:9
+
+RUN dnf update -y && \
+    dnf install -y nginx && \
+    mkdir -p /etc/nginx/conf.d /etc/ssl/private && \
+    chmod 755 /etc/nginx/conf.d /etc/ssl/private
+
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY server.conf /etc/nginx/conf.d/server.conf
+COPY certificado.crt /etc/ssl/certs/certificado.crt
+COPY private.key /etc/ssl/private/private.key
+COPY index.html /etc/nginx/html/es/index.html
+COPY index.html /etc/nginx/html/index.html
+COPY css.css /etc/nginx/html/estilos.css
+COPY indexen.html /etc/nginx/html/en/index.html
+COPY virtual1.html /etc/nginx/html/virtual1.html
+COPY virtual2.html /etc/nginx/html/virtual2.html
+COPY virtual1.html /etc/nginx/html/es/virtual1.html
+COPY virtual2.html /etc/nginx/html/es/virtual2.html
+COPY virtual1en.html /etc/nginx/html/en/virtual1.html
+COPY virtual2en.html /etc/nginx/html/en/virtual2.html
+
+RUN useradd -m -d /home/manuel -s /bin/bash manuel && \
+    mkdir -p /home/manuel/usuario_html && \
+    echo "<h1>Bienvenido a la pagina de Manuel</h1>" > /home/manuel/usuario_html/index.html && \
+    chown -R manuel:manuel /home/manuel/usuario_html && \
+    chmod -R 755 /home/manuel/usuario_html && \
+    chmod  +x  /home/manuel/
+
+RUN useradd -m -d /home/paco -s /bin/bash paco && \
+    mkdir -p /home/paco/usuario_html && \
+    echo "<h1>Bienvenido a la pagina de Paco</h1>" > /home/paco/usuario_html/index.html && \
+    chown -R paco:paco /home/paco/usuario_html && \
+    chmod -R 755 /home/paco/usuario_html  && \
+    chmod  +x  /home/manuel/
+
+
+CMD ["nginx", "-g", "daemon off;"]

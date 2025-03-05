@@ -1,0 +1,34 @@
+# Unidad organizativa para usuarios
+dn: ou=users,dc=joseftp,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: users
+
+
+Usuario: carmona
+dn: uid=carmona,ou=users,dc=joseftp,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+cn: carmona
+sn: makinito
+uid: carmona
+mail: carmona@joseftp.com
+userPassword: carmona
+uidNumber: 1002
+gidNumber: 1002
+homeDirectory: /home/ftp/
+loginShell: /bin/bash
+
+Usuario: paco
+dn: uid=paco,ou=users,dc=joseftp,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+cn: paco
+sn: makinito
+uid: paco
+mail: paco@joseftp.com
+userPassword: paco
+uidNumber: 1002
+gidNumber: 1002
+homeDirectory: /home/ftp/
+loginShell: /bin/bash

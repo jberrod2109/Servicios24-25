@@ -1,0 +1,5 @@
+#!/bin/bash
+#Cargar el archivo LDIF automáticamente
+ldapadd -x -D "cn=admin,dc=joseftp,dc=com" -w admin-ldap -f /tmp/bootstrap.ldif
+#Mantener el contenedor corriendo
+wait

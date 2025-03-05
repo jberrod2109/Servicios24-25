@@ -1,0 +1,25 @@
+FROM rockylinux:8
+
+# Instalar Apache y el módulo LDAP
+RUN dnf -y install httpd mod_ldap
+
+# Habilitar los módulos de Apache (LDAP y authnz_ldap)
+RUN echo "LoadModule ldap_module modules/mod_ldap.so" >> /etc/httpd/conf/httpd.conf && \
+    echo "LoadModule authnz_ldap_module modules/mod_authnz_ldap.so" >> /etc/httpd/conf/httpd.conf
+
+# Verificar si los módulos LDAP están cargados
+RUN apachectl -M | grep ldap || echo "LDAP module not loaded" && \
+    apachectl -M | grep authnz_ldap || echo "authnz_ldap module not loaded"
+
+# Configurar Apache para escuchar en el puerto 8080
+RUN echo "Listen 8080" >> /etc/httpd/conf/httpd.conf
+
+# Copiar archivos de configuración y contenido web
+COPY auth-ldap.conf /etc/httpd/conf.d/
+COPY pagina-ldap.html /var/www/html/protected/
+
+# Exponer el puerto 8080
+EXPOSE 8080
+
+# Iniciar el servicio de Apache
+CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]

@@ -1,0 +1,128 @@
+map $http_accept_language $lang {
+    default en;
+    ~*^es es;
+    ~*^en en;
+}
+
+server {
+    listen 80;
+    server_name localhost virtual1.localhost  virtual2.localhost;
+
+    # Redirigir todo a HTTPS
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name  www.jose.work.gd ;
+
+    ssl_certificate /etc/ssl/certs/certificado.crt;
+    ssl_certificate_key /etc/ssl/private/private.key;
+
+    root /etc/nginx/html;
+    index index.php index.html;
+    #implemetar css
+       location /css/ {
+        alias /etc/nginx/html/;
+    }
+    #usuarios virtuales
+       location ~ ^/~(.+?)(/.*)?$ {
+        alias /home/$1/usuario_html$2;
+        index index.html;
+        autoindex on; 
+    }
+
+    location / {
+
+        try_files /$lang$uri $lang$uri /$lang/index.html /index.php?$args;
+    }   
+
+	location ~ .php$ {
+            fastcgi_pass php-fpm-service:9000;
+            fastcgi_index index.php;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            include fastcgi_params;
+    }
+
+
+}
+
+
+server {
+    listen 443 ssl;
+    server_name virtual1.jose.work.gd;
+
+    ssl_certificate /etc/ssl/certs/certificado.crt;
+    ssl_certificate_key /etc/ssl/private/private.key;
+
+    root /etc/nginx/html;
+    index virtual1.html;
+     #implemetar css
+       location /css/ {
+        alias /etc/nginx/html/;
+    }
+    #usuarios virtuales
+       location ~ ^/~(.+?)(/.*)?$ {
+        alias /home/$1/usuario_html$2;
+        index index.html;
+        autoindex on; 
+    }
+
+
+    # Páginas de errores personalizadas
+    error_page 404 /$lang/404.html;
+    error_page 500 502 503 504 /$lang/50x.html;
+
+    location = /$lang/404.html {
+        internal;
+    }
+}
+
+
+
+
+server {
+    listen 443 ssl;
+    server_name virtual2.jose.work.gd;
+
+    ssl_certificate /etc/ssl/certs/certificado.crt;
+    ssl_certificate_key /etc/ssl/private/private.key;
+
+    root /etc/nginx/html;
+    index virtual2.html;
+     #implemetar css
+       location /css/ {
+        alias /etc/nginx/html/;
+    }
+    #usuarios virtuales
+       location ~ ^/~(.+?)(/.*)?$ {
+        alias /home/$1/usuario_html$2;
+        index index.html;
+        autoindex on; 
+    }
+
+
+    # Páginas de errores personalizadas
+    error_page 404 /$lang/404.html;
+    error_page 500 502 503 504 /$lang/50x.html;
+
+    location = /$lang/404.html {
+        internal;
+    }
+}
+
+server {
+    listen 443;
+    server_name ldap.jose.work.gd;
+
+    ssl_certificate /etc/ssl/certs/certificado.crt;
+    ssl_certificate_key /etc/ssl/private/private.key;
+
+    location /protegido {
+        proxy_pass http://apache:8080/protegido;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
